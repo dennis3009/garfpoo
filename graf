@@ -1,0 +1,109 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+using namespace std;
+
+class dirGraph
+{
+private:
+    int nrNoduri;
+    vector<int> lista[1000];
+
+public:
+    dirGraph();
+    ~dirGraph();
+    void addEdge(int a, int b){
+        if(a <= nrNoduri && b <= nrNoduri)
+        {
+            lista[a].push_back(b);
+        }
+        else cout<<"nu exista aceste noduri";
+    }
+    void addNodes(int k){
+        nrNoduri += k;
+    }
+    void addNode(){
+        nrNoduri++;
+    }
+    int hasEdge(int a, int b){
+        if(!lista[a].empty())
+        for(int x=0; x<lista[a].size(); x++)
+            if(lista[a][x] == b)
+            return 1;
+        return 0;
+    }
+    void DFSrec(int node, int *v)
+    {
+        cout<<node;
+        for(int k=0; k<lista[node].size(); k++)
+        {
+            if(v[lista[node][k]] == 0)
+            {
+                v[lista[node][k]]++;
+                cout<<" -> ";
+                DFSrec(lista[node][k], v);
+            }
+        }
+    }
+    void DFS(int start)
+    {
+        int v[1000];
+        v[start]++;
+        DFSrec(start, v);
+    }
+    void BFS(int start)
+    {
+        if(start <= nrNoduri)
+        {
+            queue<int> q;
+            int v[1000];
+            q.push(start);
+            v[start]++;
+            while(!q.empty())
+            {
+                int current = q.front();
+                q.pop();
+                for(int k=0; k<lista[current].size(); k++)
+                {
+                    if(v[lista[current][k]] == 0)
+                    {
+                        q.push(lista[current][k]);
+                        v[lista[current][k]]++;
+                    }
+                }
+
+                if(!q.empty())
+                    cout<<current<<" -> ";
+                else cout<<current;
+            }
+        }
+        else cout<<"nu exista acest nod";
+    }
+};
+dirGraph :: dirGraph()
+{
+    nrNoduri = 0;
+}
+dirGraph :: ~dirGraph()
+{
+    nrNoduri = 0;
+}
+int main()
+{
+    dirGraph graf;
+    graf.addNodes(4);
+    graf.addEdge(1, 2);
+    graf.addEdge(1, 3);
+    graf.addEdge(1, 4);
+    graf.addEdge(2, 1);
+    graf.addEdge(2, 4);
+    graf.addEdge(2, 7);
+    graf.addEdge(3, 1);
+    graf.addEdge(3, 4);
+
+    graf.BFS(1);
+    cout<<endl;
+    graf.DFS(1);
+    return 0;
+}
